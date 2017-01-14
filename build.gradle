@@ -1,13 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'war'
 
+group = 'ansaaXCS'
 version = '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.7
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
+
 
 dependencies {
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
@@ -20,4 +24,49 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'XCS', 'Implementation-Version': version
     }
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+publishing {
+    repositories {
+        maven {
+        credentials {
+                   username 'admin'
+                   password 'admin123'
+               }
+               url "http://localhost:8081/repository/XCS-SNAPSHOTS/"
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url 'https://dl.bintray.com/nikit007/mvn-repo/'
+        }
+    }
+    dependencies {
+        classpath "com.github.nikit.cpp.helpers:db:1.0.7"
+        classpath "gradle.plugin.com.github.nikit.cpp:wildflyDeployPlugin:1.0.8"
+    }
+}
+apply plugin: "com.github.nikit.cpp.wildfly.deploy"
+
+deployConfig {
+    deployFile = "scripts/deploy"
+    boxes = [
+        'Local' : [
+            wildfly:new helpers.Server()
+        ]
+    ]
 }
