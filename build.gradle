@@ -63,7 +63,8 @@ buildscript {
 apply plugin: "com.github.nikit.cpp.wildfly.deploy"
 
 deployConfig {
-    deployFile = "scripts/deploy"
+    deployFile = "scripts/deploy" // list of files to deploy
+      jbossHome = "/home/ansaa/Desktop/Facultad/Programas/wildfly-8.2.1.Final"
     boxes = [
         'Local' : [
             wildfly:new helpers.Server()
